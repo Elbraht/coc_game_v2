@@ -26,7 +26,7 @@ class SaveSystem {
   }
 
   // =========================
-  // 📥 LOAD SLOT
+  // 📂 LOAD SLOT
   // =========================
   static Future<SavedCharacter?> load(int slot) async {
     try {
@@ -52,7 +52,18 @@ class SaveSystem {
   }
 
   // =========================
-  // ❓ CHECK SLOT
+  // 👑 LOAD ALL SLOTS
+  // =========================
+  static Future<List<SavedCharacter?>> loadAll() async {
+    List<SavedCharacter?> loadedSlots = [null, null, null];
+    for (int i = 0; i < 3; i++) {
+      loadedSlots[i] = await load(i + 1);
+    }
+    return loadedSlots;
+  }
+
+  // =========================
+  // 🔍 CHECK SLOT
   // =========================
   static Future<bool> hasSave(int slot) async {
     final key = "$keyPrefix$slot";
@@ -67,7 +78,7 @@ class SaveSystem {
   }
 
   // =========================
-  // 🗑 DELETE SLOT
+  // 🗑️ DELETE SLOT
   // =========================
   static Future<void> delete(int slot) async {
     final key = "$keyPrefix$slot";
@@ -85,21 +96,10 @@ class SaveSystem {
   }
 
   // =========================
-  // 📁 FILE PATH
+  // 🗺️ FILE PATH
   // =========================
   static Future<File> _getFile(int slot) async {
     final dir = await getApplicationDocumentsDirectory();
     return File('${dir.path}/character_slot_$slot.json');
-  }
-
-  // =========================
-  // 📋 LOAD ALL SLOTS
-  // =========================
-  static Future<List<SavedCharacter?>> loadAll() async {
-    return [
-      await load(1),
-      await load(2),
-      await load(3),
-    ];
   }
 }

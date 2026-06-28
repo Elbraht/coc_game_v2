@@ -20,13 +20,11 @@ class FirstAdventure {
           AdventureEffect.san(-1),
         ],
       ),
-
       AdventureNode(
         text: "Drzwi ustępują. Wychodzisz na korytarz.",
         successNext: 3,
         failNext: 3,
       ),
-
       AdventureNode(
         text: "Panika. Uderzasz w drzwi aż krwawią dłonie.",
         successNext: 3,
@@ -36,7 +34,6 @@ class FirstAdventure {
           AdventureEffect.san(-2),
         ],
       ),
-
       AdventureNode(
         text: "Na ścianie widzisz skrzynkę elektryczną iskrzącą się.",
         skill: "ELEKTRYKA",
@@ -51,20 +48,19 @@ class FirstAdventure {
           AdventureEffect.san(-1),
         ],
       ),
-
       AdventureNode(
         text: "Prąd wraca. Drzwi się otwierają.",
         successNext: 6,
+        failNext: 6,
       ),
-
       AdventureNode(
         text: "Porażka. Iskra trafia cię w rękę.",
+        successNext: 6,
+        failNext: 6,
         onFail: [
           AdventureEffect.hp(-3),
         ],
-        successNext: 6,
       ),
-
       AdventureNode(
         text: "Koniec testowej przygody.",
         isEnd: true,

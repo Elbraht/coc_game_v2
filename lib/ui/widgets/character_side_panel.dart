@@ -19,20 +19,20 @@ class CharacterSidePanel extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(12),
             children: [
-              const Text("SKILLE",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text(
+                "SKILLE",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               const Divider(),
-
               ...skills.map((e) => ListTile(
                     title: Text(e.key),
                     trailing: Text("${e.value}%"),
                   )),
-
               const Divider(),
-
-              const Text("STATYSTYKI",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-
+              const Text(
+                "STATYSTYKI",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               Text("S: ${character.S}"),
               Text("KON: ${character.KON}"),
               Text("BC: ${character.BC}"),
@@ -41,9 +41,7 @@ class CharacterSidePanel extends StatelessWidget {
               Text("MOC: ${character.MOC}"),
               Text("WYG: ${character.WYG}"),
               Text("WYK: ${character.WYK}"),
-
               const Divider(),
-
               Text("HP: ${character.HP_CURRENT}/${character.HP_MAX}"),
               Text("SAN: ${character.SAN_CURRENT}/${character.SAN_MAX}"),
             ],

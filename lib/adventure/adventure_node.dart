@@ -1,4 +1,4 @@
-import 'adventure_effect.dart';
+import 'package:coc_game_v2/core/adventure_effect.dart';
 
 class AdventureNode {
   final String text;

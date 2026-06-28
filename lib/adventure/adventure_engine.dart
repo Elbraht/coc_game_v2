@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 
 class TestResult {
   final int roll;
@@ -19,19 +20,19 @@ class AdventureEngine {
     required int skill,
     required int modifier,
   }) {
-    print("🧪 AdventureEngine.runTest START");
-    print("skill: $skill");
-    print("modifier: $modifier");
+    debugPrint("🧪 AdventureEngine.runTest START");
+    debugPrint("skill: $skill");
+    debugPrint("modifier: $modifier");
 
     final target = (skill + modifier).clamp(1, 100);
     final roll = _rng.nextInt(100) + 1;
 
-    print("calculated target: $target");
-    print("rolled value: $roll");
+    debugPrint("calculated target: $target");
+    debugPrint("rolled value: $roll");
 
     final result = roll <= target ? "SUCCESS" : "FAIL";
 
-    print("FINAL RESULT: $result");
+    debugPrint("FINAL RESULT: $result");
 
     return TestResult(
       roll: roll,

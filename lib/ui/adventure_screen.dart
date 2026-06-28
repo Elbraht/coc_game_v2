@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:coc_game_v2/adventure/first_adventure.dart';
 import 'package:coc_game_v2/adventure/adventure_engine.dart';
+import 'package:coc_game_v2/adventure/adventure_node.dart';
 import 'package:coc_game_v2/game_state.dart';
 import 'package:coc_game_v2/ui/widgets/character_hud.dart';
 import 'package:coc_game_v2/ui/widgets/character_side_panel.dart';
@@ -24,12 +25,13 @@ class _AdventureScreenState extends State<AdventureScreen> {
   int? roll;
   int? target;
   String? result;
+  int? skillValue;
 
   bool isResolving = false;
+  bool testPerformed = false;
 
-  void runTest(node) {
+  void runTest(AdventureNode node) {
     final c = GameState.character.value;
-
     if (c == null) {
       if (kDebugMode) print("🔴 CHARACTER NULL");
       return;
@@ -37,10 +39,24 @@ class _AdventureScreenState extends State<AdventureScreen> {
 
     if (node.skill == null) return;
 
-    final skillValue = c.skills[node.skill] ?? 0;
+    // Pobieramy wartość cechy/umiejętności (szukamy w skills, jeśli brak to sprawdzamy statystyki postaci)
+    int value = 0;
+    if (node.skill == "S") {
+      value = c.S;
+    } else if (node.skill == "ZR") {
+      value = c.ZR;
+    } else if (node.skill == "INT") {
+      value = c.INT;
+    } else if (node.skill == "MOC") {
+      value = c.MOC;
+    } else if (node.skill == "KON") {
+      value = c.KON;
+    } else {
+      value = c.skills[node.skill] ?? 0;
+    }
 
     final r = engine.runTest(
-      skill: skillValue,
+      skill: value,
       modifier: node.modifier,
     );
 
@@ -49,68 +65,58 @@ class _AdventureScreenState extends State<AdventureScreen> {
       roll = r.roll;
       target = r.target;
       result = r.result;
+      skillValue = value;
+      testPerformed = true;
     });
 
-    if (kDebugMode) {
-      print("🟢 TEST: ${r.result}");
+    // Nakładamy efekty z węzła w zależności od wyniku kości
+    if (r.result == "SUCCESS") {
+      for (final effect in node.onSuccess) {
+        c.applyEffect(effect);
+      }
+    } else {
+      for (final effect in node.onFail) {
+        c.applyEffect(effect);
+      }
     }
+    GameState.refreshHUD();
   }
 
-  void go(int next) {
-    final c = GameState.character.value;
-
-    if (c == null) {
-      if (kDebugMode) print("🔴 GO: CHARACTER NULL");
-      return;
-    }
-
-    final node = adventure.getNode(index);
-
-    final success = result == "SUCCESS";
-    final effects = success ? node.onSuccess : node.onFail;
-
-    for (final e in effects) {
-      c.applyEffect(e);
-    }
-
+  void handleChoice(bool isSuccess, AdventureNode node) {
     setState(() {
-      index = next;
+      if (isSuccess) {
+        index = node.successNext ?? index;
+      } else {
+        index = node.failNext ?? index;
+      }
+      // Reset stanu testu dla nowego węzła
       skill = null;
       roll = null;
       target = null;
       result = null;
+      skillValue = null;
       isResolving = false;
-    });
-
-    GameState.refreshHUD();
-  }
-
-  void handleChoice(bool successPath, node) {
-    if (isResolving) return;
-
-    setState(() {
-      isResolving = true;
-    });
-
-    runTest(node);
-
-    Future.delayed(const Duration(milliseconds: 900), () {
-      if (!mounted) return;
-
-      go(successPath ? node.successNext! : node.failNext!);
+      testPerformed = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final node = adventure.getNode(index);
+    // Bezpieczne pobranie węzła
+    final node = (index >= 0 && index < adventure.nodes.length)
+        ? adventure.nodes[index]
+        : adventure.nodes[0];
 
-    final hasChoices = node.successNext != null && node.failNext != null;
+    final hasSkillTest = node.skill != null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Przygoda")),
+      appBar: AppBar(
+        title: const Text("Przygoda"),
+      ),
       drawer: const CharacterSidePanel(),
-      bottomNavigationBar: const CharacterHud(),
+      bottomNavigationBar: const SafeArea(
+        child: CharacterHud(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -118,13 +124,13 @@ class _AdventureScreenState extends State<AdventureScreen> {
           children: [
             Text(node.text, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 20),
-            if (skill != null)
+            if (testPerformed && skill != null)
               TestHud(
                 skill: skill!,
-                skillValue: target ?? 0,
+                skillValue: skillValue ?? 0,
                 roll: roll ?? 0,
                 target: target ?? 0,
-                result: result ?? "",
+                result: result ?? "FAIL",
               ),
             const Spacer(),
             if (node.isEnd)
@@ -132,26 +138,25 @@ class _AdventureScreenState extends State<AdventureScreen> {
                 onPressed: () => setState(() => index = 0),
                 child: const Text("KONIEC — restart"),
               )
-            else if (hasChoices) ...[
+            else if (hasSkillTest && !testPerformed)
               ElevatedButton(
-                onPressed: () {
-                  handleChoice(true, node);
-                },
-                child: Text("A — sukces / ${node.skill ?? 'brak'}"),
+                onPressed: () => runTest(node),
+                child: Text(
+                    "Wykonaj test: ${node.skill} (${node.modifier >= 0 ? '+' : ''}${node.modifier})"),
+              )
+            else if (hasSkillTest && testPerformed) ...[
+              ElevatedButton(
+                onPressed: () => handleChoice(result == "SUCCESS", node),
+                child: Text(result == "SUCCESS"
+                    ? "Przejdź dalej (Sukces)"
+                    : "Przejdź dalej (Porażka)"),
               ),
+            ] else ...[
               ElevatedButton(
-                onPressed: () {
-                  handleChoice(false, node);
-                },
-                child: Text("B — porażka / ${node.skill ?? 'brak'}"),
-              ),
-            ] else
-              ElevatedButton(
-                onPressed: () {
-                  handleChoice(true, node);
-                },
+                onPressed: () => handleChoice(true, node),
                 child: const Text("Dalej"),
               ),
+            ],
           ],
         ),
       ),

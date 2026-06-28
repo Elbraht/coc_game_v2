@@ -33,22 +33,22 @@ class _StartScreenState extends State<StartScreen> {
     });
   }
 
- void startSlot(SavedCharacter c) {
-  final character = c.toCharacter();
+  void startSlot(SavedCharacter c) {
+    final character = c.toCharacter();
 
-  debugPrint("🟢 START SLOT");
-  debugPrint("-> ${character.name}");
+    debugPrint("🟢 START SLOT");
+    debugPrint("-> ${character.name}");
 
-  GameState.setCharacter(character);
+    GameState.setCharacter(character);
 
-  debugPrint("🟢 AFTER SET");
-  debugPrint("-> ${GameState.character.value?.name}");
+    debugPrint("🟢 AFTER SET");
+    debugPrint("-> ${GameState.character.value?.name}");
 
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (_) => const AdventureScreen()),
-  );
-}
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const AdventureScreen()),
+    );
+  }
 
   void newGame(int slot) {
     Navigator.push(
@@ -56,11 +56,13 @@ class _StartScreenState extends State<StartScreen> {
       MaterialPageRoute(
         builder: (_) => CharacterCreationFlow(slot: slot),
       ),
-    ).then((_) => loadSlots());
+    ).then((_) {
+      if (mounted) loadSlots();
+    });
   }
 
   Widget slotCard(int index) {
-    final slot = slots[index];
+    final slot = slots.length > index ? slots[index] : null;
 
     if (slot == null) {
       return Card(
@@ -99,10 +101,6 @@ class _StartScreenState extends State<StartScreen> {
                 const SizedBox(height: 20),
                 ...List.generate(3, (i) => slotCard(i)),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: loadSlots,
-                  child: const Text("Odśwież"),
-                ),
               ],
             ),
     );

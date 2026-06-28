@@ -1,34 +1,17 @@
-import 'package:flutter/foundation.dart';
-import 'character.dart';
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+import 'package:flutter/material.dart';
+import 'package:coc_game_v2/character.dart';
 
 class GameState {
   static final ValueNotifier<Character?> character =
       ValueNotifier<Character?>(null);
 
-  static final ValueNotifier<int> hudTick = ValueNotifier(0);
-
-  static void refreshHUD() {
-    hudTick.value++;
-
-    debugPrint("🟡 refreshHUD()");
-    debugPrint("-> character null: ${character.value == null}");
-
-    character.notifyListeners();
-  }
-
   static void setCharacter(Character c) {
     character.value = c;
-
-    debugPrint("🟢 setCharacter: ${c.name}");
-
     refreshHUD();
   }
 
-  static void updateCharacter(Character updated) {
-    character.value = updated;
-
-    debugPrint("🔵 updateCharacter");
-
-    refreshHUD();
+  static void refreshHUD() {
+    character.notifyListeners();
   }
 }

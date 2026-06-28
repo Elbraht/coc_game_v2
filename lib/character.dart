@@ -1,31 +1,30 @@
-import 'core/adventure_effect.dart';
+// ignore_for_file: non_constant_identifier_names
 
 class Character {
-  String name;
-  int age;
-  String gender;
-  String birthPlace;
+  final String name;
+  final int age;
+  final String gender;
+  final String birthPlace;
 
-  int S;
-  int KON;
-  int BC;
-  int ZR;
-  int INT;
-  int MOC;
-  int WYK;
-  int WYG;
+  final int S;
+  final int KON;
+  final int BC;
+  final int ZR;
+  final int INT;
+  final int MOC;
+  final int WYK;
+  final int WYG;
 
   int HP_MAX;
   int HP_CURRENT;
-
   int SAN_MAX;
   int SAN_CURRENT;
 
-  int RUCH;
-  int KRZEPA;
-  int SZCZESCIE;
+  final int RUCH;
+  final int KRZEPA;
+  final int SZCZESCIE;
 
-  Map<String, int> skills;
+  final Map<String, int> skills;
 
   Character({
     required this.name,
@@ -50,57 +49,17 @@ class Character {
     required this.skills,
   });
 
-  // =========================
-  // CORE EFFECT SYSTEM (COC ENGINE)
-  // =========================
-
-  void applyEffect(AdventureEffect e) {
-    print("🧬 applyEffect() START");
-    print("type: ${e.type}");
-    print("value: ${e.value}");
-    print("skillName: ${e.skillName}");
-
-    print("BEFORE -> HP: $HP_CURRENT/$HP_MAX, SAN: $SAN_CURRENT/$SAN_MAX");
-
-    switch (e.type) {
-      case EffectType.hp:
-        HP_CURRENT = (HP_CURRENT + e.value).clamp(0, HP_MAX);
-        break;
-
-      case EffectType.san:
-        SAN_CURRENT = (SAN_CURRENT + e.value).clamp(0, SAN_MAX);
-        break;
-
-      case EffectType.skill:
-        skills[e.skillName!] = (skills[e.skillName!] ?? 0) + e.value;
-        break;
+  void applyEffect(dynamic effect) {
+    if (effect.type == 'hp') {
+      HP_CURRENT = (HP_CURRENT + effect.value as int).clamp(0, HP_MAX);
+    } else if (effect.type == 'san') {
+      SAN_CURRENT = (SAN_CURRENT + effect.value as int).clamp(0, SAN_MAX);
+    } else if (effect.type == 'skill') {
+      final skillName = effect.target as String;
+      if (skills.containsKey(skillName)) {
+        skills[skillName] =
+            (skills[skillName]! + effect.value as int).clamp(1, 99);
+      }
     }
-
-    print("AFTER  -> HP: $HP_CURRENT/$HP_MAX, SAN: $SAN_CURRENT/$SAN_MAX");
-    print("🧬 applyEffect() END");
-  }
-
-  // =========================
-  // HELPERS (UNCHANGED LOGIC)
-  // =========================
-
-  void takeDamage(int value) {
-    print("⚔️ takeDamage($value)");
-    HP_CURRENT = (HP_CURRENT - value).clamp(0, HP_MAX);
-  }
-
-  void heal(int value) {
-    print("💚 heal($value)");
-    HP_CURRENT = (HP_CURRENT + value).clamp(0, HP_MAX);
-  }
-
-  void loseSan(int value) {
-    print("🧠 loseSan($value)");
-    SAN_CURRENT = (SAN_CURRENT - value).clamp(0, SAN_MAX);
-  }
-
-  void gainSan(int value) {
-    print("✨ gainSan($value)");
-    SAN_CURRENT = (SAN_CURRENT + value).clamp(0, SAN_MAX);
   }
 }
