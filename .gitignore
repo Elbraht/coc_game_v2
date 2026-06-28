@@ -1,0 +1,10 @@
+.dart_tool/
+build/
+android/.gradle/
+android/app/debug.keystore
+ios/Pods/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+linux/flutter/ephemeral/
+windows/flutter/ephemeral/
+macos/Flutter/ephemeral/
