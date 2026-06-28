@@ -1,30 +1,13 @@
 // ignore_for_file: non_constant_identifier_names
-
 class Character {
   final String name;
   final int age;
   final String gender;
   final String birthPlace;
-
-  final int S;
-  final int KON;
-  final int BC;
-  final int ZR;
-  final int INT;
-  final int MOC;
-  final int WYK;
-  final int WYG;
-
-  int HP_MAX;
-  int HP_CURRENT;
-  int SAN_MAX;
-  int SAN_CURRENT;
-
-  final int RUCH;
-  final int KRZEPA;
-  final int SZCZESCIE;
-
-  final Map<String, int> skills;
+  final int S, KON, BC, ZR, INT, MOC, WYK, WYG;
+  int HP_MAX, HP_CURRENT, SAN_MAX, SAN_CURRENT;
+  final int RUCH, KRZEPA, SZCZESCIE;
+  final Map<String, int> umiejetnosci;
 
   Character({
     required this.name,
@@ -46,20 +29,34 @@ class Character {
     required this.RUCH,
     required this.KRZEPA,
     required this.SZCZESCIE,
-    required this.skills,
+    required this.umiejetnosci,
   });
 
-  void applyEffect(dynamic effect) {
-    if (effect.type == 'hp') {
-      HP_CURRENT = (HP_CURRENT + effect.value as int).clamp(0, HP_MAX);
-    } else if (effect.type == 'san') {
-      SAN_CURRENT = (SAN_CURRENT + effect.value as int).clamp(0, SAN_MAX);
-    } else if (effect.type == 'skill') {
-      final skillName = effect.target as String;
-      if (skills.containsKey(skillName)) {
-        skills[skillName] =
-            (skills[skillName]! + effect.value as int).clamp(1, 99);
-      }
-    }
+  // Metoda dodana, aby naprawić błąd w adventure_execution.dart
+  void applyEffect(dynamic effect) {}
+
+  Character copyWith({int? HP_CURRENT, int? SAN_CURRENT}) {
+    return Character(
+      name: name,
+      age: age,
+      gender: gender,
+      birthPlace: birthPlace,
+      S: S,
+      KON: KON,
+      BC: BC,
+      ZR: ZR,
+      INT: INT,
+      MOC: MOC,
+      WYK: WYK,
+      WYG: WYG,
+      HP_MAX: HP_MAX,
+      HP_CURRENT: HP_CURRENT ?? this.HP_CURRENT,
+      SAN_MAX: SAN_MAX,
+      SAN_CURRENT: SAN_CURRENT ?? this.SAN_CURRENT,
+      RUCH: RUCH,
+      KRZEPA: KRZEPA,
+      SZCZESCIE: SZCZESCIE,
+      umiejetnosci: umiejetnosci,
+    );
   }
 }

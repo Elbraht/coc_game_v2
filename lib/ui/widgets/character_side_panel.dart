@@ -9,43 +9,27 @@ class CharacterSidePanel extends StatelessWidget {
     return Drawer(
       child: ValueListenableBuilder(
         valueListenable: GameState.character,
-        builder: (context, character, _) {
-          if (character == null) {
-            return const Center(child: Text("Brak postaci"));
-          }
-
-          final skills = character.skills.entries.toList();
-
-          return ListView(
-            padding: const EdgeInsets.all(12),
-            children: [
-              const Text(
-                "SKILLE",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Divider(),
-              ...skills.map((e) => ListTile(
-                    title: Text(e.key),
-                    trailing: Text("${e.value}%"),
-                  )),
-              const Divider(),
-              const Text(
-                "STATYSTYKI",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text("S: ${character.S}"),
-              Text("KON: ${character.KON}"),
-              Text("BC: ${character.BC}"),
-              Text("ZR: ${character.ZR}"),
-              Text("INT: ${character.INT}"),
-              Text("MOC: ${character.MOC}"),
-              Text("WYG: ${character.WYG}"),
-              Text("WYK: ${character.WYK}"),
-              const Divider(),
-              Text("HP: ${character.HP_CURRENT}/${character.HP_MAX}"),
-              Text("SAN: ${character.SAN_CURRENT}/${character.SAN_MAX}"),
-            ],
-          );
+        builder: (context, c, _) {
+          if (c == null) return const Center(child: Text("Brak postaci"));
+          return ListView(padding: const EdgeInsets.all(12), children: [
+            const Text("CECHY",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text("S: ${c.S} | KON: ${c.KON} | BC: ${c.BC}"),
+            Text("ZR: ${c.ZR} | INT: ${c.INT} | MOC: ${c.MOC}"),
+            Text("WYG: ${c.WYG} | WYK: ${c.WYK}"),
+            Text(
+                "RUCH: ${c.RUCH} | KRZEPA: ${c.KRZEPA} | SZCZESCIE: ${c.SZCZESCIE}"),
+            const Divider(),
+            const Text("UMIEJĘTNOŚCI",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ...c.umiejetnosci.entries.map((e) =>
+                ListTile(title: Text(e.key), trailing: Text("${e.value}%"))),
+            const Divider(),
+            Text("HP: ${c.HP_CURRENT}/${c.HP_MAX}",
+                style: const TextStyle(color: Colors.red)),
+            Text("SAN: ${c.SAN_CURRENT}/${c.SAN_MAX}",
+                style: const TextStyle(color: Colors.purple)),
+          ]);
         },
       ),
     );
