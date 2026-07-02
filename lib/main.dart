@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ui/start_screen.dart';
+import 'package:coc_game_v2/ui/start_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: StartScreen(),
+      home: const StartScreen(), // Teraz to zadziała!
     );
   }
 }

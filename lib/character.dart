@@ -1,62 +1,109 @@
-// ignore_for_file: non_constant_identifier_names
+import 'package:coc_game_v2/models/inventory_models.dart';
+
 class Character {
   final String name;
   final int age;
   final String gender;
   final String birthPlace;
-  final int S, KON, BC, ZR, INT, MOC, WYK, WYG;
-  int HP_MAX, HP_CURRENT, SAN_MAX, SAN_CURRENT;
-  final int RUCH, KRZEPA, SZCZESCIE;
-  final Map<String, int> umiejetnosci;
+
+  // Główne cechy postaci
+  int s;
+  int kon;
+  int bc;
+  int zr;
+  int inte;
+  int moc;
+  int wyk;
+  int wyg;
+
+  // Statystyki bieżące i maksymalne
+  int hpMax;
+  int hpCurrent;
+  int sanMax;
+  int sanCurrent;
+  int ruch;
+  int szczescie;
+
+  // Ekwipunek i listy
+  List<GameItem> items = [];
+  List<Weapon> weapons = [];
+  List<Spell> spells = [];
+  List<Clue> clues = [];
+
+  // Mapa wszystkich umiejętności postaci
+  Map<String, int> umiejetnosci;
 
   Character({
     required this.name,
     required this.age,
     required this.gender,
     required this.birthPlace,
-    required this.S,
-    required this.KON,
-    required this.BC,
-    required this.ZR,
-    required this.INT,
-    required this.MOC,
-    required this.WYK,
-    required this.WYG,
-    required this.HP_MAX,
-    required this.HP_CURRENT,
-    required this.SAN_MAX,
-    required this.SAN_CURRENT,
-    required this.RUCH,
-    required this.KRZEPA,
-    required this.SZCZESCIE,
+    required this.s,
+    required this.kon,
+    required this.bc,
+    required this.zr,
+    required this.inte,
+    required this.moc,
+    required this.wyk,
+    required this.wyg,
+    required this.hpMax,
+    required this.hpCurrent,
+    required this.sanMax,
+    required this.sanCurrent,
+    required this.ruch,
+    required this.szczescie,
     required this.umiejetnosci,
+    int? krzepa, // Stary parametr ignorujemy, bo mamy getter
   });
 
-  // Metoda dodana, aby naprawić błąd w adventure_execution.dart
-  void applyEffect(dynamic effect) {}
+  // Pomocnicza metoda używana w AdventureScreen do pobierania cechy lub umiejętności
+  int getStatOrSkill(String name) {
+    String lower = name.toLowerCase();
+    if (lower == "s") return s;
+    if (lower == "kon") return kon;
+    if (lower == "bc") return bc;
+    if (lower == "zr") return zr;
+    if (lower == "int" || lower == "inte") return inte;
+    if (lower == "moc") return moc;
+    if (lower == "wyk") return wyk;
+    if (lower == "wyg") return wyg;
 
-  Character copyWith({int? HP_CURRENT, int? SAN_CURRENT}) {
-    return Character(
-      name: name,
-      age: age,
-      gender: gender,
-      birthPlace: birthPlace,
-      S: S,
-      KON: KON,
-      BC: BC,
-      ZR: ZR,
-      INT: INT,
-      MOC: MOC,
-      WYK: WYK,
-      WYG: WYG,
-      HP_MAX: HP_MAX,
-      HP_CURRENT: HP_CURRENT ?? this.HP_CURRENT,
-      SAN_MAX: SAN_MAX,
-      SAN_CURRENT: SAN_CURRENT ?? this.SAN_CURRENT,
-      RUCH: RUCH,
-      KRZEPA: KRZEPA,
-      SZCZESCIE: SZCZESCIE,
-      umiejetnosci: umiejetnosci,
-    );
+    // Jeśli to nie cecha, szukamy w mapie umiejętności
+    return umiejetnosci[name] ?? 0;
+  }
+
+  // Obliczanie udźwigu dla InventorySidePanel
+  double get currentWeight {
+    double total = 0;
+    for (var item in items) {
+      total += item.weight;
+    }
+    for (var weapon in weapons) {
+      total += weapon.weight;
+    }
+    return total;
+  }
+
+  bool get isOverburdened => currentWeight > (s / 2);
+
+  // Dynamiczny getter dla Modyfikatora Obrażeń (MO)
+  String get modyfikatorObrazen {
+    int sum = s + bc;
+    if (sum <= 64) return "-2";
+    if (sum <= 84) return "-1";
+    if (sum <= 124) return "0";
+    if (sum <= 164) return "+1k4";
+    int n = 1 + ((sum - 125) ~/ 80);
+    return "+${n}k6";
+  }
+
+  // Dynamiczny getter dla Krzepy
+  int get krzepa {
+    int sum = s + bc;
+    if (sum <= 64) return -2;
+    if (sum <= 84) return -1;
+    if (sum <= 124) return 0;
+    if (sum <= 164) return 1;
+    return 1 + ((sum - 125) ~/ 80);
   }
 }

@@ -18,28 +18,28 @@ class SavedCharacter {
   });
 
   Character toCharacter() {
-    final hpMax = ((stats["S"] ?? 0) + (stats["KON"] ?? 0)) ~/ 10;
-    final sanMax = stats["MOC"] ?? 0;
+    final hpMax = ((stats["s"] ?? 0) + (stats["kon"] ?? 0)) ~/ 10;
+    final sanMax = stats["moc"] ?? 0;
     return Character(
       name: name,
       age: age,
       gender: gender,
       birthPlace: birthPlace,
-      S: stats["S"] ?? 0,
-      KON: stats["KON"] ?? 0,
-      BC: stats["BC"] ?? 0,
-      ZR: stats["ZR"] ?? 0,
-      INT: stats["INT"] ?? 0,
-      MOC: stats["MOC"] ?? 0,
-      WYK: stats["WYK"] ?? 0,
-      WYG: stats["WYG"] ?? 0,
-      HP_MAX: hpMax,
-      HP_CURRENT: hpMax,
-      SAN_MAX: sanMax,
-      SAN_CURRENT: sanMax,
-      RUCH: 8,
-      KRZEPA: 0,
-      SZCZESCIE: 0,
+      s: stats["s"] ?? 0,
+      kon: stats["kon"] ?? 0,
+      bc: stats["bc"] ?? 0,
+      zr: stats["zr"] ?? 0,
+      inte: stats["inte"] ?? 0,
+      moc: stats["moc"] ?? 0,
+      wyk: stats["wyk"] ?? 0,
+      wyg: stats["wyg"] ?? 0,
+      hpMax: hpMax,
+      hpCurrent: hpMax,
+      sanMax: sanMax,
+      sanCurrent: sanMax,
+      ruch: 8,
+      krzepa: 0,
+      szczescie: 0,
       umiejetnosci: umiejetnosci,
     );
   }
@@ -51,14 +51,14 @@ class SavedCharacter {
       gender: c.gender,
       birthPlace: c.birthPlace,
       stats: {
-        "S": c.S,
-        "KON": c.KON,
-        "BC": c.BC,
-        "ZR": c.ZR,
-        "INT": c.INT,
-        "MOC": c.MOC,
-        "WYK": c.WYK,
-        "WYG": c.WYG
+        "s": c.s,
+        "kon": c.kon,
+        "bc": c.bc,
+        "zr": c.zr,
+        "inte": c.inte,
+        "moc": c.moc,
+        "wyk": c.wyk,
+        "wyg": c.wyg
       },
       umiejetnosci: c.umiejetnosci,
     );
